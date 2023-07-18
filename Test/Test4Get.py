@@ -2,8 +2,7 @@ import json
 
 from bs4 import BeautifulSoup
 import requests
-import json,hashlib
-
+import json, hashlib
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
@@ -34,7 +33,8 @@ coverInfoStr = coverInfo['srcset']
 # 文章内图片
 pics = soup.find_all('figure', {'class': 'wp-caption aligncenter'})
 
-coverResp = requests.post("https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic="+coverInfoStr+"&suffix=jpg")
+coverResp = requests.post(
+    "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + coverInfoStr + "&suffix=jpg")
 params['cover'] = json.loads(coverResp.text)['data']['result']
 postMediaInfos = []
 postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
@@ -72,21 +72,30 @@ postSponsorInfo = {
     "userCustomerName": "nxjdsjjs",
     "projectMemberNums": 1100
 }
-params['postSponsorInfo'] = postSponsorInfo;
+params['postSponsorInfo'] = postSponsorInfo
 
 # print(content)
 # for p_tag in first_level_p_tags:
 #   print(p_tag.get_text().strip())
 
 article_tag = soup.select_one('div.posted-in').find_all('a')
-hashTagsList=[]
+hashTagsList = []
 for a_tag in article_tag:
-    print(a_tag.get_text().strip())
+    # print(a_tag.get_text().strip())
     hashTagsList.append(a_tag.get_text().strip())
 
 params['hashTags'] = hashTagsList
-params['hashTags'] = hashTagsList
 
-#获取封面meta信息
+# 获取封面meta信息
 
-print(params)
+#print(params)
+
+headers2 = {
+    "Content-Type": "application/json;charset=UTF-8",
+    "Authorization": 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoiZmJmNzk0NDgyNDE1NDJmOGEwMjc3YTYzODk2ZDg3MTAiLCJmcm9tLXNvdXJjZSI6MSwiZXhwIjoxNjkwNTM3ODcyfQ.nIsdnOGeeoH4A21cTXDAzVhHPWXER71R_XwLDhUh0DSw5uaR11CGiAaqSJQYyGaVzrYSPQS05qAI23TdTvD-nw'
+}
+body = json.dumps(params)
+print(body)
+response2 = requests.post('https://www.nftb.vip:9090/api/nftplatform/v2/rpc/post/addMongoPostTem', headers=headers2,
+                          data=body)
+print('添加post返回', json.loads(response2.text))
