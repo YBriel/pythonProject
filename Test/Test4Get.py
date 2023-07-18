@@ -1,5 +1,9 @@
+import json
+
 from bs4 import BeautifulSoup
 import requests
+import json,hashlib
+
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
@@ -21,18 +25,30 @@ params["title"] = title.text
 # 文章封面
 cover = soup.find('div', {'class': 'post-header article clearfix'})
 coverInfo = cover.find('img', {'class': 'nolazy'})
-list = []
-
 print('文章封面', coverInfo['srcset'])
-list.append(coverInfo['srcset'])
+
+coverInfoStr = coverInfo['srcset']
+
 # print(coverInfo['src']) #图片地址
 
 # 文章内图片
 pics = soup.find_all('figure', {'class': 'wp-caption aligncenter'})
 
+coverResp = requests.post("https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic="+coverInfoStr+"&suffix=jpg")
+params['cover'] = json.loads(coverResp.text)['data']['result']
+postMediaInfos = []
+postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
+
+contentPics = []
 for pic in pics:
     contentPic = pic.find('img')
+    contentPics.append(contentPic['src'])
+    coverResp = requests.post(
+        "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + pic + "&suffix=jpg")
+    postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
     print('文章图片', contentPic['src'])
+
+params['postMediaInfos'] = postMediaInfos
 # 文章内容
 
 # Parse the HTML with BeautifulSoup
@@ -70,5 +86,7 @@ for a_tag in article_tag:
 
 params['hashTags'] = hashTagsList
 params['hashTags'] = hashTagsList
+
+#获取封面meta信息
 
 print(params)
