@@ -10,17 +10,21 @@ html = requests.get(
     'https://cryptoslate.com/elizabeth-warren-asks-sec-to-investigate-elon-musks-dual-roles-at-twitter-and-tesla/',
     headers=headers).text
 
-#print("html内容为{}", html)
+# print("html内容为{}", html)
+params = {'mediaType': 2}
 
 soup = BeautifulSoup(html, 'html.parser')
 # 查找<div class="list-post">下的<article>标签下的所有<a>标签
 title = soup.find('h1', {'class': 'post-title'})
 print("文章标题:", title.text)
-
+params["title"] = title.text
 # 文章封面
 cover = soup.find('div', {'class': 'post-header article clearfix'})
 coverInfo = cover.find('img', {'class': 'nolazy'})
+list = []
+
 print('文章封面', coverInfo['srcset'])
+list.append(coverInfo['srcset'])
 # print(coverInfo['src']) #图片地址
 
 # 文章内图片
@@ -30,18 +34,6 @@ for pic in pics:
     contentPic = pic.find('img')
     print('文章图片', contentPic['src'])
 # 文章内容
-
-# articles = soup.find_all('article')
-# print(articles)
-# articleRes = articles.find_all('p')
-# for ar in articleRes:
-#     print(ar)
-#文章内容
-# articleSoup = soup.find("div", {'class': 'post-box clearfix'})
-# paragraphs = articleSoup.find_all('p')
-# print("内", paragraphs)
-# content = '\n'.join([p.text.strip() for p in paragraphs])
-# print('文章内容：\n', content)
 
 # Parse the HTML with BeautifulSoup
 soup = BeautifulSoup(html, 'html.parser')
@@ -54,10 +46,29 @@ first_level_p_tags = article_p.find_all('p', recursive=False)
 
 # Extract and print the text content of each direct child <p> tag
 content = '\n'.join([p.text.strip() for p in first_level_p_tags])
-#print(content)
-#for p_tag in first_level_p_tags:
+params["content"] = content
+postSponsorInfo = {
+    "sponsorId": "e4e5b89332ec47049160ae9a487c8092",
+    "userId": "e4e5b89332ec47049160ae9a487c8092",
+    "postType": 1,
+    "userAvatar": "168241357387742.jpg",
+    "userName": "在家干嘛",
+    "userCustomerName": "nxjdsjjs",
+    "projectMemberNums": 1100
+}
+params['postSponsorInfo'] = postSponsorInfo;
+
+# print(content)
+# for p_tag in first_level_p_tags:
 #   print(p_tag.get_text().strip())
 
 article_tag = soup.select_one('div.posted-in').find_all('a')
+hashTagsList=[]
 for a_tag in article_tag:
     print(a_tag.get_text().strip())
+    hashTagsList.append(a_tag.get_text().strip())
+
+params['hashTags'] = hashTagsList
+params['hashTags'] = hashTagsList
+
+print(params)
