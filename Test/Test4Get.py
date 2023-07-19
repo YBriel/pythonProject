@@ -8,7 +8,7 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 }
 
-print("开始请求")
+
 html = requests.get(
     'https://cryptoslate.com/elizabeth-warren-asks-sec-to-investigate-elon-musks-dual-roles-at-twitter-and-tesla/',
     headers=headers).text
