@@ -29,7 +29,7 @@ for post in div_list_post:
                 print('Link:', href)
                 print('Title:', title)
                 PostTem.postTem(article['id'], href)
-        except AttributeError as e:
+        except (AttributeError, TypeError)as e:
             print('出现异常了')
 
 
