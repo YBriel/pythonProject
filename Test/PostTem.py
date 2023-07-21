@@ -9,39 +9,35 @@ def postTem(postId, url):
     }
     html = requests.get(url, headers=headers).text
 
-    # print("html内容为{}", html)
     params = {'mediaType': 2}
     soup = BeautifulSoup(html, 'html.parser')
     # 查找<div class="list-post">下的<article>标签下的所有<a>标签
     title = soup.find('h1', {'class': 'post-title'})
-    print("文章标题:", title.text)
+    #print("文章标题:", title.text)
     params["title"] = title.text
-    # 文章封面
     cover = soup.find('div', {'class': 'post-header article clearfix'})
     coverInfo = cover.find('img', {'class': 'nolazy'})
-    print('文章封面', coverInfo['srcset'])
-
-    coverInfoStr = coverInfo['srcset']
-
-    # print(coverInfo['src']) #图片地址
+    coverTem= coverInfo['srcset']
+    coverTem=coverTem[coverTem.rfind(','):].replace(" 2x", '')
+    print('文章封面', coverTem)
 
     # 文章内图片
     pics = soup.find_all('figure', {'class': 'wp-caption aligncenter'})
 
-    coverResp = requests.post(
-        "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + coverInfoStr + "&suffix=jpg")
-    params['cover'] = json.loads(coverResp.text)['data']['result']
+    # cover_resp = requests.post(
+    #     "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + coverTem + "&suffix=jpg")
+    # params['cover'] = json.loads(cover_resp.text)['data']['result']
     postMediaInfos = []
-    postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
+   # postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
 
     contentPics = []
     for pic in pics:
         contentPic = pic.find('img')
         contentPics.append(contentPic['src'])
-        coverResp = requests.post(
-            "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + contentPic['src'] + "&suffix=jpg")
-        postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
-        print('文章图片', contentPic['src'])
+        # coverResp = requests.post(
+        #     "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + contentPic['src'] + "&suffix=jpg")
+        # postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
+        # print('文章图片', contentPic['src'])
 
     params['postMediaInfos'] = postMediaInfos
     # 文章内容
@@ -73,28 +69,29 @@ def postTem(postId, url):
     # print(content)
     # for p_tag in first_level_p_tags:
     #   print(p_tag.get_text().strip())
+    soup_post_tag=soup.select_one('div.posted-in')
+    if soup_post_tag is not None:
+        article_tag =soup_post_tag.find_all('a')
+        hashTagsList = []
+        for a_tag in article_tag:
+            # print(a_tag.get_text().strip())
+            hashTagsList.append(a_tag.get_text().strip())
 
-    article_tag = soup.select_one('div.posted-in').find_all('a')
-    hashTagsList = []
-    for a_tag in article_tag:
-        # print(a_tag.get_text().strip())
-        hashTagsList.append(a_tag.get_text().strip())
-
-    params['hashTags'] = hashTagsList
+        params['hashTags'] = hashTagsList
 
     # 获取封面meta信息
 
-    # print(params)
+    print(params)
 
     headers2 = {
         "Content-Type": "application/json;charset=UTF-8",
-        "Authorization": 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoiZmJmNzk0NDgyNDE1NDJmOGEwMjc3YTYzODk2ZDg3MTAiLCJmcm9tLXNvdXJjZSI6MSwiZXhwIjoxNjkwNTM3ODcyfQ.nIsdnOGeeoH4A21cTXDAzVhHPWXER71R_XwLDhUh0DSw5uaR11CGiAaqSJQYyGaVzrYSPQS05qAI23TdTvD-nw'
+        "Authorization": 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoiZmJmNzk0NDgyNDE1NDJmOGEwMjc3YTYzODk2ZDg3MTAiLCJmcm9tLXNvdXJjZSI6MSwiZXhwIjoxNjkwMjg2ODI4fQ.4UHoFfmvRlQP5eQt3-SCrPJ4tG1a429eBUnX0KxLplNcpl5AetIY1h6nc7MxFF15Vrf_UhtEnAzBcniDpOuSdw'
     }
     body = json.dumps(params)
     print(body)
-    response2 = requests.post('https://www.nftb.vip:9090/api/nftplatform/v2/rpc/post/addMongoPostTem', headers=headers2,
+    response2 = requests.post('https://www.bonaxl.com/api/nftplatform/v2/rpc/post/addMongoPostTem', headers=headers2,
                               data=body)
-    print('添加post /s 返回', postId, json.loads(response2.text))
+    print('添加post %s 返回', postId, json.loads(response2.text))
 
 if __name__ == '__main__':
     postTem("12","https://cryptoslate.com/caroline-ellisons-private-writings-in-months-before-alameda-ftx-collapse-uncovered-in-discovery-process/")
