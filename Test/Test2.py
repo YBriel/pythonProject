@@ -8,7 +8,7 @@ headers = {
 
 
 html = requests.get(
-    'https://cryptoslate.com/news/page/2',
+    'https://cryptoslate.com/news',
     headers=headers).text
 
 soup = BeautifulSoup(html, 'html.parser')

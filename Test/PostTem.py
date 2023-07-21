@@ -8,6 +8,7 @@ def postTem(postId, url):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
     }
     html = requests.get(url, headers=headers).text
+
     # print("html内容为{}", html)
     params = {'mediaType': 2}
     soup = BeautifulSoup(html, 'html.parser')
@@ -38,7 +39,7 @@ def postTem(postId, url):
         contentPic = pic.find('img')
         contentPics.append(contentPic['src'])
         coverResp = requests.post(
-            "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + pic + "&suffix=jpg")
+            "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + contentPic['src'] + "&suffix=jpg")
         postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
         print('文章图片', contentPic['src'])
 
@@ -93,3 +94,6 @@ def postTem(postId, url):
     response2 = requests.post('https://www.nftb.vip:9090/api/nftplatform/v2/rpc/post/addMongoPostTem', headers=headers2,
                               data=body)
     print('添加post /s 返回', postId, json.loads(response2.text))
+
+if __name__ == '__main__':
+    postTem("12","https://cryptoslate.com/the-nft-of-jack-dorseys-first-tweet-originally-purchased-for-2-9m-is-worth-less-than-4-in-todays-market/")
