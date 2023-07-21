@@ -57,7 +57,8 @@ def postTem(postId, url):
 
     # Extract and print the text content of each direct child <p> tag
     content = '\n'.join([p.text.strip() for p in first_level_p_tags])
-    params["content"] = content
+
+    params["content"] = article_p.text
     postSponsorInfo = {
         "sponsorId": "e4e5b89332ec47049160ae9a487c8092",
         "userId": "e4e5b89332ec47049160ae9a487c8092",
@@ -96,4 +97,4 @@ def postTem(postId, url):
     print('添加post /s 返回', postId, json.loads(response2.text))
 
 if __name__ == '__main__':
-    postTem("12","https://cryptoslate.com/the-nft-of-jack-dorseys-first-tweet-originally-purchased-for-2-9m-is-worth-less-than-4-in-todays-market/")
+    postTem("12","https://cryptoslate.com/caroline-ellisons-private-writings-in-months-before-alameda-ftx-collapse-uncovered-in-discovery-process/")
