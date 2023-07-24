@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from urllib.parse import urlencode
 import requests
 import json
 
@@ -10,6 +11,7 @@ def postTem(postId, url):
     html = requests.get(url, headers=headers).text
 
     params = {'mediaType': 2}
+    params['postId'] = postId
     soup = BeautifulSoup(html, 'html.parser')
     # 查找<div class="list-post">下的<article>标签下的所有<a>标签
     title = soup.find('h1', {'class': 'post-title'})
@@ -18,14 +20,25 @@ def postTem(postId, url):
     cover = soup.find('div', {'class': 'post-header article clearfix'})
     coverInfo = cover.find('img', {'class': 'nolazy'})
     coverTem= coverInfo['srcset']
-    coverTem=coverTem[coverTem.rfind(','):].replace(" 2x", '')
-    print('文章封面', coverTem)
+   # coverTem=coverTem[coverTem.rfind(','):].replace(" 2x", '')
+    print('文章封面',  coverTem.rsplit(',')[-1].replace('2x', '').strip())
 
     # 文章内图片
     pics = soup.find_all('figure', {'class': 'wp-caption aligncenter'})
 
-    cover_resp = requests.post(
-        "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + coverTem + "&suffix=jpg")
+    cover_url = coverTem.rsplit(',')[-1].replace('2x', '').strip()
+
+    headers0 = {
+        "Content-Type": "application/json;charset=UTF-8"
+    }
+    # cover_resp = requests.post(
+    #     "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + urlencode(cover_url) + "&suffix=jpg")
+    cover_param = {'pic': cover_url, 'suffix':'jpg'}
+
+    cover_body = json.dumps(cover_param)
+    # print(body)
+    cover_resp = requests.post('https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfoBody',headers=headers0,
+                              data=cover_body)
     params['cover'] = json.loads(cover_resp.text)['data']['result']
     postMediaInfos = []
     postMediaInfos.append(json.loads(cover_resp.text)['data']['result'])
@@ -49,10 +62,10 @@ def postTem(postId, url):
     article_p = soup.select_one('div.post-box.clearfix article')
 
     # Find all the direct child <p> tags within the <article> tag
-    first_level_p_tags = article_p.find_all('p', recursive=False)
+    #first_level_p_tags = article_p.find_all('p', recursive=False)
 
     # Extract and print the text content of each direct child <p> tag
-    content = '\n'.join([p.text.strip() for p in first_level_p_tags])
+    #content = '\n'.join([p.text.strip() for p in first_level_p_tags])
 
     params["content"] = article_p.text
     postSponsorInfo = {
@@ -69,26 +82,34 @@ def postTem(postId, url):
     # print(content)
     # for p_tag in first_level_p_tags:
     #   print(p_tag.get_text().strip())
-    soup_post_tag=soup.select_one('div.posted-in')
+    soup_post_tag = soup.select_one('div.posted-in')
     if soup_post_tag is not None:
-        article_tag =soup_post_tag.find_all('a')
-        hashTagsList = []
+        article_tag = soup_post_tag.find_all('a')
+        hash_tags_list = []
+        params['hashTags'] = hash_tags_list
         for a_tag in article_tag:
             # print(a_tag.get_text().strip())
-            hashTagsList.append(a_tag.get_text().strip())
+            hash_tags_list.append(a_tag.get_text().strip())
 
-        params['hashTags'] = hashTagsList
+        params['hashTags'] = hash_tags_list
 
     # 获取封面meta信息
 
-    print(params)
-
+    #print(params)
+    params['mentionedUsers'] = []
+    params['mentionedCommunities'] = []
+    params['mentionedPostClubInfos'] = []
+    params['mentionedBounties'] = []
+    params['mentionedBounties'] = []
+    params['mentionedWatchList'] = []
+    params['mentionedDApps'] = []
+    params['source'] = 3
     headers2 = {
         "Content-Type": "application/json;charset=UTF-8",
         "Authorization": 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoiZmJmNzk0NDgyNDE1NDJmOGEwMjc3YTYzODk2ZDg3MTAiLCJmcm9tLXNvdXJjZSI6MSwiZXhwIjoxNjkwMjg2ODI4fQ.4UHoFfmvRlQP5eQt3-SCrPJ4tG1a429eBUnX0KxLplNcpl5AetIY1h6nc7MxFF15Vrf_UhtEnAzBcniDpOuSdw'
     }
     body = json.dumps(params)
-    print(body)
+    #print(body)
     response2 = requests.post('https://www.bonaxl.com/api/nftplatform/v2/rpc/post/addMongoPostTem', headers=headers2,
                               data=body)
     print('添加post %s 返回', postId, json.loads(response2.text))

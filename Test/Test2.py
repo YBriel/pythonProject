@@ -8,7 +8,7 @@ headers = {
 
 
 html = requests.get(
-    'https://cryptoslate.com/news/page/3',
+    'https://cryptoslate.com/news/',
     headers=headers).text
 
 soup = BeautifulSoup(html, 'html.parser')
@@ -29,8 +29,8 @@ for post in div_list_post:
                 print('Link:', href)
                 print('Title:', title)
                 PostTem.postTem(article['id'], href)
-        except (AttributeError, TypeError)as e:
-            print('出现异常了', e)
+        except Exception as e:
+            print("出现如下异常%s" % e)
 
 
 
