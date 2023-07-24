@@ -24,20 +24,20 @@ def postTem(postId, url):
     # 文章内图片
     pics = soup.find_all('figure', {'class': 'wp-caption aligncenter'})
 
-    # cover_resp = requests.post(
-    #     "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + coverTem + "&suffix=jpg")
-    # params['cover'] = json.loads(cover_resp.text)['data']['result']
+    cover_resp = requests.post(
+        "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + coverTem + "&suffix=jpg")
+    params['cover'] = json.loads(cover_resp.text)['data']['result']
     postMediaInfos = []
-   # postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
+    postMediaInfos.append(json.loads(cover_resp.text)['data']['result'])
 
     contentPics = []
     for pic in pics:
         contentPic = pic.find('img')
         contentPics.append(contentPic['src'])
-        # coverResp = requests.post(
-        #     "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + contentPic['src'] + "&suffix=jpg")
-        # postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
-        # print('文章图片', contentPic['src'])
+        coverResp = requests.post(
+            "https://www.bonaxl.com/api/nftplatform/v1/oss/uploadFileUrlMetaInfo?pic=" + contentPic['src'] + "&suffix=jpg")
+        postMediaInfos.append(json.loads(coverResp.text)['data']['result'])
+        print('文章图片', contentPic['src'])
 
     params['postMediaInfos'] = postMediaInfos
     # 文章内容
