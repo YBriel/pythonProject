@@ -65,7 +65,7 @@ def postTem(postId, url):
     first_level_p_tags = article_p.find_all('p', recursive=False)
 
     # Extract and print the text content of each direct child <p> tag
-    content = '  \n'.join([" " + p.text.strip() for p in first_level_p_tags])
+    content = '  \n'.join(["  " + p.text.strip() for p in first_level_p_tags])
 
     params["content"] = content
    # params["content"] = article_p.text
