@@ -1,5 +1,6 @@
 
-print("he")
-a = 'https://cryptoslate.com/wp-content/themes/cryptoslate-2020/imgresize/timthumb.php?src=https://cryptoslate.com/wp-content/uploads/2022/06/doj-crypto-crime.jpg&w=800&h=420&q=75 1.5x, https://cryptoslate.com/wp-content/themes/cryptoslate-2020/imgresize/timthumb.php?src=https://cryptoslate.com/wp-content/uploads/2022/06/doj-crypto-crime.jpg&w=1200&h=630&q=75 2x'
-b = a.rsplit(',')[-1].replace('2x', '').strip()
-print(b)
+first_level_p_tags = ['i', 'am', 'tom']
+content = '  \n'.join([" " + p.strip() for p in first_level_p_tags])
+content2 = '  \n'.join([" " + p for p in first_level_p_tags])
+print(content)
+print(content2)

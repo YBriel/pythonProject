@@ -62,12 +62,13 @@ def postTem(postId, url):
     article_p = soup.select_one('div.post-box.clearfix article')
 
     # Find all the direct child <p> tags within the <article> tag
-    #first_level_p_tags = article_p.find_all('p', recursive=False)
+    first_level_p_tags = article_p.find_all('p', recursive=False)
 
     # Extract and print the text content of each direct child <p> tag
-    #content = '\n'.join([p.text.strip() for p in first_level_p_tags])
+    content = '  \n'.join([" " + p.text.strip() for p in first_level_p_tags])
 
-    params["content"] = article_p.text
+    params["content"] = content
+   # params["content"] = article_p.text
     postSponsorInfo = {
         "sponsorId": "e4e5b89332ec47049160ae9a487c8092",
         "userId": "e4e5b89332ec47049160ae9a487c8092",
@@ -82,11 +83,11 @@ def postTem(postId, url):
     # print(content)
     # for p_tag in first_level_p_tags:
     #   print(p_tag.get_text().strip())
+    hash_tags_list = []
+    params['hashTags'] = hash_tags_list
     soup_post_tag = soup.select_one('div.posted-in')
     if soup_post_tag is not None:
         article_tag = soup_post_tag.find_all('a')
-        hash_tags_list = []
-        params['hashTags'] = hash_tags_list
         for a_tag in article_tag:
             # print(a_tag.get_text().strip())
             hash_tags_list.append(a_tag.get_text().strip())
