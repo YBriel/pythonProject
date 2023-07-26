@@ -7,7 +7,7 @@ headers = {
 }
 
 
-for i in range(50, 60):
+for i in range(70, 80):
     print(i)
     html = requests.get(
         'https://cryptoslate.com/news/page/'+str(i)+'/',

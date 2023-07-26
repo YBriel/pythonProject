@@ -107,13 +107,13 @@ def postTem(postId, url):
     params['source'] = 3
     headers2 = {
         "Content-Type": "application/json;charset=UTF-8",
-        "Authorization": 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoiZmJmNzk0NDgyNDE1NDJmOGEwMjc3YTYzODk2ZDg3MTAiLCJmcm9tLXNvdXJjZSI6MSwiZXhwIjoxNjkwMjg2ODI4fQ.4UHoFfmvRlQP5eQt3-SCrPJ4tG1a429eBUnX0KxLplNcpl5AetIY1h6nc7MxFF15Vrf_UhtEnAzBcniDpOuSdw'
+        "Authorization": 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoiZmJmNzk0NDgyNDE1NDJmOGEwMjc3YTYzODk2ZDg3MTAiLCJmcm9tLXNvdXJjZSI6MSwiZXhwIjoxNjkxMjA5MDIwfQ.Chb1oa-Wg4DdmiQyRfG0awUvCxotlpFn7D-9edZM9xncNBU1TEwCDSgoZHHZDq-f5Hrq8Fmbm8oFmHbzMM2_Mw'
     }
     body = json.dumps(params)
     #print(body)
     response2 = requests.post('https://www.bonaxl.com/api/nftplatform/v2/rpc/post/addMongoPostTem', headers=headers2,
                               data=body)
-    print('添加post %s 返回', postId, json.loads(response2.text))
+    print('添加post返回', postId, json.loads(response2.text))
 
 if __name__ == '__main__':
     postTem("12","https://cryptoslate.com/caroline-ellisons-private-writings-in-months-before-alameda-ftx-collapse-uncovered-in-discovery-process/")
