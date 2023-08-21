@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup4
 import PostTem
 import requests
 
@@ -7,7 +7,7 @@ headers = {
 }
 
 
-for i in range(70, 80):
+for i in range(14, 20):
     print(i)
     html = requests.get(
         'https://cryptoslate.com/news/page/'+str(i)+'/',
