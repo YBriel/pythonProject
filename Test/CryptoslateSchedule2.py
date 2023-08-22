@@ -150,6 +150,18 @@ def loop_monitor():
     s.enter(7200, 1, time_printer, ())
     s.run()
 
+def time_printer2():
+    now = datetime.datetime.now()
+    ts = now.strftime('%Y-%m-%d %H:%M:%S')
+    print('程序还正常运行中...', ts)
+    loop_monitor2()
+
+
+def loop_monitor2():
+    s = sched.scheduler(time.time, time.sleep)  # 生成调度器
+    s.enter(5, 1, time_printer2, ())
+    s.run()
 
 if __name__ == "__main__":
+    loop_monitor2()
     loop_monitor()
